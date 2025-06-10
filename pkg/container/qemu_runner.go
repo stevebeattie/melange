@@ -22,8 +22,10 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/x509"
 	_ "embed"
 	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"io"
 	"log/slog"
@@ -138,6 +140,9 @@ func (bw *qemu) Debug(ctx context.Context, cfg *Config, envOverride map[string]s
 			clog.InfoContextf(ctx, "To enter this environment: ssh %s@localhost -p %s",
 				user,
 				strings.Split(cfg.SSHAddress, ":")[1])
+			clog.InfoContextf(ctx, "To enter the workspace environment: ssh %s@localhost -p %s",
+				user,
+				strings.Split(cfg.SSHWorkspaceAddress, ":")[1])
 		}
 	}
 
@@ -1186,6 +1191,19 @@ func generateSSHKeys(ctx context.Context, cfg *Config) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	derBytes, err := x509.MarshalECPrivateKey(privateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	pemBlock := &pem.Block{
+		Type:  "EC PRIVATE KEY",
+		Bytes: derBytes,
+	}
+
+	pemBytes := pem.EncodeToMemory(pemBlock)
+	clog.FromContext(ctx).Debugf("qemu: client private key is: %s", string(pemBytes))
 
 	// Private key in PEM format
 	signer, err := ssh.NewSignerFromKey(privateKey)
