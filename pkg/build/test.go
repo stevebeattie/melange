@@ -317,12 +317,6 @@ func (t *Test) TestPackage(ctx context.Context) error {
 		err = func() error {
 			cfg.Arch = t.Arch
 
-			// We've swtiched the default user in the qemu runner to the
-			// "build" user, but for the time being we'll keep the
-			// default user for tests in qemu as root.
-			if t.Runner.Name() == "qemu" && cfg.RunAs == "" {
-				cfg.RunAs = "root"
-			}
 			if err := t.Runner.StartPod(ctx, cfg); err != nil {
 				return fmt.Errorf("unable to start pod: %w", err)
 			}
@@ -376,13 +370,6 @@ func (t *Test) TestPackage(ctx context.Context) error {
 				debug:       t.Debug,
 				config:      subCfg,
 				runner:      t.Runner,
-			}
-
-			// We've swtiched the default user in the qemu runner to the
-			// "build" user, but for the time being we'll keep the
-			// default user for tests in qemu as root.
-			if t.Runner.Name() == "qemu" && subCfg.RunAs == "" {
-				subCfg.RunAs = "root"
 			}
 
 			if err := t.Runner.StartPod(ctx, subCfg); err != nil {

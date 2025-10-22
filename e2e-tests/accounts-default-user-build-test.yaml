@@ -36,10 +36,10 @@ subpackages:
       pipeline:
         - uses: check-accounts
           with:
-            expected_uid: 0
-            expected_username: root
-            expected_gid: 0
-            expected_groupname: root
+            expected_uid: 1000
+            expected_username: build
+            expected_gid: 1000
+            expected_groupname: build
 test:
   environment:
     contents:
@@ -48,7 +48,7 @@ test:
   pipeline:
     - uses: check-accounts
       with:
-        expected_uid: 0
-        expected_username: root
-        expected_gid: 0
-        expected_groupname: root
+        expected_uid: 1000
+        expected_username: build
+        expected_gid: 1000
+        expected_groupname: build
