@@ -112,8 +112,8 @@ func (bw *qemu) Run(ctx context.Context, cfg *Config, envOverride map[string]str
 func (bw *qemu) Debug(ctx context.Context, cfg *Config, envOverride map[string]string, args ...string) error {
 	clog.FromContext(ctx).Debugf("running debug command: %v", args)
 
-	// default to root user, unless a different user is specified
-	user := "root"
+	// default to build user, unless a different user is specified
+	user := "build"
 	if cfg.RunAs != "" {
 		user = cfg.RunAs
 	}
@@ -942,8 +942,8 @@ func setupSSHClients(ctx context.Context, cfg *Config) error {
 		return err
 	}
 
-	// default to root user, unless a different user is specified
-	user := "root"
+	// default to build user, unless a different user is specified
+	user := "build"
 	if cfg.RunAs != "" {
 		user = cfg.RunAs
 	}
